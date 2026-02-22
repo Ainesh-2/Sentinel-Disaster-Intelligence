@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+import cv2
 import numpy as np
 import torch
 
@@ -12,15 +13,28 @@ class YOLOSegmentation:
 
     def segment_image(self, image_path):
         results = self.model(image_path, verbose=False)
-        if results[0].masks is None:
-            print("No masks found in the results.")
-            return None, 0.0
+        result = results[0]
 
-        masks = results[0].masks.data.cpu().numpy()
+        print("Boxes detected:", len(result.boxes))
+        print("Masks present:", result.masks is not None)
 
-        combined_mask = np.sum(masks, axis=0)
+        h, w = result.orig_shape
+
+        combined_mask = np.zeros((h, w), dtype=np.uint8)
+        confidence_heatmap = np.zeros((h, w), dtype=np.float32)
+
+        if result.masks is None or len(result.boxes) == 0:
+            return combined_mask, 0.0, confidence_heatmap, (h, w)
+
+        masks = result.masks.data.cpu().numpy()
+        confidences = result.boxes.conf.cpu().numpy()
+
+        for mask, conf in zip(masks, confidences):
+            binary_mask = (mask > 0).astype(np.uint8)
+            binary_mask = cv2.resize(binary_mask, (w, h))
+            combined_mask += binary_mask
+            confidence_heatmap += binary_mask * float(conf)
+
         combined_mask = (combined_mask > 0).astype(np.uint8)
-
-        damage_percentage = (combined_mask.sum() / combined_mask.size) * 100
-
-        return combined_mask, round(damage_percentage, 2), results[0].orig_shape
+        damage_percentage = (combined_mask.sum() / combined_mask.size * 100)
+        return combined_mask, round(damage_percentage, 2), confidence_heatmap, (h, w)
