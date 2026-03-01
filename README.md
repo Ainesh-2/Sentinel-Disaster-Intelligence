@@ -90,16 +90,17 @@ Designed for scalable deployment on CPU and accelerator-based environments.
 
 ---
 
-##🔮 **Future Scope**
+## 🔮 Future Scope
 
--Sentinel is designed as a scalable disaster intelligence framework. Future enhancements include:
--Upgrading to larger segmentation backbones (YOLOv8s/l)
--Multi-temporal change detection (pre vs post-disaster comparison)
--Region-scale batch inference pipelines
--Real-time satellite stream processing
--Infrastructure severity classification (minor, major, destroyed)
--Cloud and distributed deployment
--Integration with disaster management dashboards
--Resource allocation and prioritization engines
+Sentinel is designed as a scalable disaster intelligence framework. Future enhancements include:
+
+- Upgrading to larger segmentation backbones (YOLOv8s/l)
+- Multi-temporal change detection (pre vs post-disaster comparison)
+- Region-scale batch inference pipelines
+- Real-time satellite stream processing
+- Infrastructure severity classification (minor, major, destroyed)
+- Cloud and distributed deployment
+- Integration with disaster management dashboards
+- Resource allocation and prioritization engines
 
 ---
