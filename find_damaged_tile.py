@@ -23,7 +23,7 @@ for mask_file in os.listdir(mask_dir):
     damage_pixels = np.sum((mask == 2) | (mask == 3) |
                            (mask == 4) | (mask == 255))
 
-    if damage_pixels > 3000:  # strong visible damage
+    if damage_pixels > 40000:  # strong visible damage
         print("Strong damaged tile found:")
         print("Image:", image_file)
         print("Damage pixels:", damage_pixels)

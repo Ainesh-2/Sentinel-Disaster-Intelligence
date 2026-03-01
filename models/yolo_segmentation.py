@@ -8,7 +8,7 @@ class YOLOSegmentation:
         print("Using trained disaster model...")
         self.model = YOLO("runs/segment/train/weights/best.pt")
 
-    def segment_image(self, image_path, conf_threshold=0.05):
+    def segment_image(self, image_path, conf_threshold=0.03):
         results = self.model(image_path, conf=conf_threshold)
 
         result = results[0]
