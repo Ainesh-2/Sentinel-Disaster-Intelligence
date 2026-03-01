@@ -2,11 +2,8 @@ __pycache__/
 *.pt
 *.pth
 .env
-
 xbd-tiles-256/
 data/
 runs/
-
-*.pt
-
 venv/
+*.zip

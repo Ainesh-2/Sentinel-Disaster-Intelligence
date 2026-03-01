@@ -1,27 +1,30 @@
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 
 
-def generate_confidence_overlay(image_path, confidence_heatmap):
-
+def generate_heatmap_overlay(image_path, heatmap):
     image = cv2.imread(image_path)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    h, w, _ = image.shape
+    if image is None:
+        print("Failed to load image.")
+        return
 
-    heatmap = confidence_heatmap.copy()
-    heatmap = cv2.GaussianBlur(heatmap, (51, 51), 0)
-    heatmap_norm = cv2.normalize(
-        heatmap, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
-    heatmap_norm[heatmap_norm < 15] = 0
-    heatmap_color = cv2.applyColorMap(heatmap_norm, cv2.COLORMAP_JET)
-    heatmap_color = cv2.cvtColor(heatmap_color, cv2.COLOR_BGR2RGB)
+    # Normalize heatmap safely
+    if heatmap.max() > 0:
+        heatmap_norm = heatmap / heatmap.max()
+    else:
+        heatmap_norm = heatmap
 
-    overlay = cv2.addWeighted(image, 0.6, heatmap_color, 0.4, 0)
+    heatmap_uint8 = np.uint8(255 * heatmap_norm)
 
-    plt.figure(figsize=(8, 8))
-    plt.imshow(overlay)
-    plt.title('Damage Heatmap Overlay')
-    plt.axis('off')
-    plt.show()
+    colored = cv2.applyColorMap(heatmap_uint8, cv2.COLORMAP_JET)
+
+    # Ensure correct types
+    colored = colored.astype(np.uint8)
+    image = image.astype(np.uint8)
+
+    overlay = cv2.addWeighted(image, 0.7, colored, 0.3, 0)
+
+    cv2.imshow("Damage Heatmap Overlay", overlay)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
